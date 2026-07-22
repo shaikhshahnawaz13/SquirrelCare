@@ -1,15 +1,24 @@
 import os
+import logging
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import google.generativeai as genai
 
 # ==========================================
-# CONFIGURATION
+# CONFIGURATION & SETUP
 # ==========================================
-GEMINI_API_KEY = "AQ.Ab8RN6KU6Mhutr0si2z3lVSUE6oe-LH8tovlxowXEDb32cvQmQ"
-
-genai.configure(api_key=GEMINI_API_KEY)
-
 app = Flask(__name__)
+
+# Enable CORS to allow your GitHub Pages frontend to communicate with this backend
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+# Configure logging for production debugging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Gemini API Key
+GEMINI_API_KEY = "AQ.Ab8RN6KU6Mhutr0si2z3lVSUE6oe-LH8tovlxowXEDb32cvQmQ"
+genai.configure(api_key=GEMINI_API_KEY)
 
 # ==========================================
 # SYSTEM INSTRUCTIONS (SURI PERSONA)
@@ -20,34 +29,46 @@ Your personality is that of an extraordinarily intelligent, polite, calm, and cu
 You know a vast amount about healthcare, biology, and wellness, and you enjoy explaining complex medical terminology in simple, understandable ways.
 
 CRITICAL RULES:
-1. IDENTITY: You are an AI character. You must never claim to be human, a doctor, a nurse, or a licensed healthcare professional. Do not use cringey dialogue, excessive emojis, baby talk, or make constant jokes/squirrel puns. Be subtle, gentle, and highly helpful.
+1. IDENTITY: You are an AI character. Never claim to be human, a doctor, a nurse, or a licensed healthcare professional. Do not use cringey dialogue, excessive emojis, baby talk, or make constant jokes/squirrel puns. Be subtle, gentle, and highly helpful.
 2. MEDICAL SAFETY: You provide general health information and education. You DO NOT provide definitive medical diagnoses. Use phrases like "Possible causes might include..." or "Often, this can be related to...". 
 3. EMERGENCIES: If the user describes potentially life-threatening symptoms (e.g., severe chest pain, severe difficulty breathing, loss of consciousness, stroke symptoms, major bleeding, severe allergic reaction), STOP any casual questionnaire immediately. Clearly and calmly advise them to seek immediate emergency medical assistance.
 4. CONVERSATION FLOW: Do not ask 20 questions at once. Ask 1 or 2 relevant follow-up questions at a time to narrow down symptoms (e.g., "How long have you been feeling this way?", "Is the pain constant?").
 5. FORMATTING: Use clean, readable formatting. Use short paragraphs. Use bullet points for lists. Bold key terms. Do not use giant walls of text.
 """
 
-# Initialize the Gemini model
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    system_instruction=SURI_SYSTEM_INSTRUCTION
-)
+# Initialize the Gemini model using current supported SDK
+try:
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-flash",
+        system_instruction=SURI_SYSTEM_INSTRUCTION
+    )
+except Exception as e:
+    logger.error(f"Failed to initialize Gemini model: {e}")
+    model = None
 
 # ==========================================
 # ROUTES
 # ==========================================
-@app.route('/')
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Endpoint to verify the backend is running and accessible."""
+    return jsonify({
+        "status": "online",
+        "service": "SquirrelCare Backend",
+        "gemini_configured": bool(GEMINI_API_KEY)
+    }), 200
+
+@app.route('/', methods=['GET'])
 def index():
-    """Serves the main SquirrelCare web application."""
-    try:
-        with open('index.html', 'r', encoding='utf-8') as f:
-            return f.read()
-    except FileNotFoundError:
-        return "Error: index.html not found. Please ensure it is in the same directory as app.py.", 404
+    """Fallback route just in case someone visits the backend URL directly."""
+    return jsonify({"message": "SquirrelCare API is running. Please access the application via the frontend."})
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
     """Handles chat requests, passing them to Gemini and returning the response."""
+    if not model:
+        return jsonify({"error": "The AI service is currently misconfigured on the server."}), 503
+
     try:
         data = request.get_json()
         
@@ -63,9 +84,9 @@ def chat():
 
         client_history = data.get('history', [])
         
-        # Format history for Gemini API requirements
+        # Format history for Gemini API requirements (role must be 'user' or 'model')
         formatted_history = []
-        for msg in client_history[-10:]: # Keep last 10 messages to manage context size
+        for msg in client_history[-15:]: # Keep last 15 messages for context
             role = "user" if msg.get('role') == 'user' else "model"
             formatted_history.append({
                 "role": role,
@@ -82,12 +103,16 @@ def chat():
             "response": response.text
         })
 
+    except genai.types.generation_types.StopCandidateException as e:
+        logger.error(f"Content Policy Violation: {str(e)}")
+        return jsonify({"error": "I'm sorry, I cannot discuss that topic."}), 400
     except Exception as e:
-        print(f"Gemini API Error: {str(e)}")
-        # Safe frontend error message
-        return jsonify({"error": "Sorry, I couldn't reach the health assistant right now. Please try again in a moment."}), 500
+        logger.error(f"Gemini API Error: {str(e)}")
+        # Safe frontend error message, never exposing stack traces
+        return jsonify({"error": "Sorry, I couldn't reach the health network right now. Please try again in a moment."}), 500
 
 if __name__ == '__main__':
-    # Run locally
-    app.run(host='127.0.0.1', port=5000, debug=True)
-          
+    # Bind to 0.0.0.0 and use PORT env var for production compatibility (Render/Heroku)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
+            
