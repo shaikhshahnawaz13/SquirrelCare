@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SquirrelCare | Healthcare guidance, made a little simpler.</title>
+    
+    <style>
+        /* =========================
+           DESIGN SYSTEM
+        ========================= */
+        :root {
+            --bg-main: #FCFDFB;
+            --primary: #1E3F33;
+            --secondary: #3A6B57;
+            --accent: #88B799;
+            --surface: #FFFFFF;
+            --surface-alt: #F0F4F2;
+            --text-main: #2C3532;
+            --text-muted: #5C6E66;
+            --border: #E2E8E4;
+            --error: #D9534F;
+            
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 2px 8px rgba(30, 63, 51, 0.05);
+            --shadow-md: 0 8px 24px rgba(30, 63, 51, 0.08);
+            --shadow-lg: 0 12px 48px rgba(30, 63, 51, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            :root {
+                --transition: none;
+            }
+        }
+
+        /* =========================
+           BASE
+        ========================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { cursor: pointer; font-family: inherit; border: none; background: none; }
+        input, select { font-family: inherit; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 96px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background-color: var(--surface-alt);
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+        nav {
+            position: sticky;
+            top: 0;
+            background-color: rgba(252, 253, 251, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .logo svg {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+        .hero {
+            padding: 80px 0 120px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            color: var(--primary);
+            margin-bottom: 24px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            max-width: 480px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 100%;
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--surface-alt);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        
+        .hero-visual svg {
+            width: 80%;
+            height: auto;
+            color: var(--accent);
+            opacity: 0.8;
+        }
+
+        /* =========================
+           HEALTH TOOLS
+        ========================= */
+        #health-tools .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .tool-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tool-card h3 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.25rem;
+        }
+
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(58, 107, 87, 0.1);
+        }
+
+        .tool-result {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--surface-alt);
+            border-radius: var(--radius-md);
+            display: none;
+            font-size: 0.95rem;
+            color: var(--primary);
+        }
+
+        .tool-result strong {
+            font-size: 1.5rem;
+            display: block;
+            margin-top: 4px;
+        }
+        
+        .tool-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        /* =========================
+           SYMPTOMS EXPLORER
+        ========================= */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .symptom-category {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .symptom-category:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .symptom-category h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .symptom-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .symptom-list li {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .symptom-list li::before {
+            content: "•";
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+        }
+
+        .ask-suri-link {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .ask-suri-link:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           WELLNESS & HOW IT WORKS
+        ========================= */
+        .wellness-grid, .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .wellness-card {
+            padding: 24px;
+            border-left: 2px solid var(--border);
+        }
+
+        .wellness-card h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .wellness-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .step-card {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--surface-alt);
+            color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 16px;
+        }
+
+        .step-card h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* =========================
+           MEET SURI & TRUST
+        ========================= */
+        .meet-suri {
+            background-color: var(--surface-alt);
+            border-radius: 24px;
+            padding: 64px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .suri-avatar-large {
+            width: 200px;
+            height: 200px;
+            background: var(--surface);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .suri-avatar-large svg {
+            width: 100px;
+            height: 100px;
+            color: var(--secondary);
+        }
+
+        .meet-suri-content h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .meet-suri-content p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        
+        .suri-disclaimer {
+            font-size: 0.85rem;
+            background: var(--surface);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--accent);
+            color: var(--primary);
+            display: inline-block;
+            margin-top: 16px;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 64px;
+            border-top: 1px solid var(--border);
+            padding-top: 64px;
+        }
+
+        .trust-item h5 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .trust-item p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* =========================
+           CHAT INTERFACE (MODAL/FIXED)
+        ========================= */
+        .chat-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(30, 63, 51, 0.2);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .chat-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 420px;
+            height: 650px;
+            max-height: calc(100vh - 48px);
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transform: translateY(120%) scale(0.95);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .chat-widget.open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .chat-header {
+            padding: 20px 24px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .suri-avatar-small {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .suri-avatar-small svg { width: 20px; height: 20px; color: white; }
+
+        .suri-status {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .chat-actions button {
+            color: white;
+            opacity: 0.7;
+            padding: 4px;
+            transition: var(--transition);
+        }
+        
+        .chat-actions button:hover { opacity: 1; }
+
+        .chat-disclaimer {
+            background: var(--surface-alt);
+            font-size: 0.75rem;
+            padding: 8px 24px;
+            color: var(--text-muted);
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: var(--bg-main);
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message p { margin-bottom: 8px; }
+        .message p:last-child { margin-bottom: 0; }
+        .message ul { padding-left: 20px; margin-bottom: 8px; }
+        .message li { margin-bottom: 4px; }
+        .message strong { font-weight: 600; }
+
+        .message-user {
+            background: var(--surface-alt);
+            color: var(--text-main);
+            border-radius: 16px 16px 4px 16px;
+            align-self: flex-end;
+        }
+
+        .message-suri {
+            background: white;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 16px 16px 16px 4px;
+            align-self: flex-start;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .chat-suggestions {
+            padding: 0 24px 12px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            background: var(--bg-main);
+        }
+        
+        .chat-suggestions::-webkit-scrollbar { display: none; }
+
+        .suggestion-chip {
+            white-space: nowrap;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--accent);
+            background: var(--surface-alt);
+        }
+
+        .chat-input-area {
+            padding: 16px 24px;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input-area textarea {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: none;
+            height: 48px;
+            max-height: 120px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .chat-input-area textarea:focus {
+            border-color: var(--secondary);
+        }
+
+        .btn-send {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .btn-send:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        .btn-send:not(:disabled):hover {
+            background: var(--secondary);
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px 16px 16px 4px;
+            padding: 16px 20px;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-indicator.active { display: flex; }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+        footer {
+            background-color: var(--primary);
+            color: rgba(255,255,255,0.8);
+            padding: 80px 0 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 64px;
+        }
+
+        .footer-logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .footer-logo svg { color: var(--accent); }
+        
+        .footer-desc {
+            max-width: 300px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer-links h5 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .footer-disclaimer {
+            text-align: center;
+            font-size: 0.75rem;
+            margin-top: 32px;
+            opacity: 0.6;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+        @media (max-width: 992px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin: 0 auto 32px; }
+            .hero-actions { justify-content: center; }
+            .symptoms-grid { grid-template-columns: repeat(2, 1fr); }
+            .meet-suri { grid-template-columns: 1fr; text-align: center; }
+            .trust-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 72px;
+                left: 0; right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 24px;
+                box-shadow: var(--shadow-md);
+                display: none;
+            }
+            .nav-links.active { display: flex; }
+            .mobile-menu-btn { display: block; }
+            
+            .hero-content h1 { font-size: 2.5rem; }
+            #health-tools .tools-grid { grid-template-columns: 1fr; }
+            .wellness-grid, .steps-grid { grid-template-columns: 1fr; gap: 48px; }
+            .wellness-card { border-left: none; border-top: 2px solid var(--border); padding-top: 24px; }
+            
+            .chat-widget {
+                width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                bottom: 0; right: 0;
+                border-radius: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .symptoms-grid { grid-template-columns: 1fr; }
+            .trust-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .hero-actions { flex-direction: column; }
+            .hero-visual { min-height: 250px; }
+        }
+    </style>
+</head>
+
+  <body>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
+                    <path d="M8 12c0 2.21 1.79 4 4 4s4-1.79 4-4"></path>
+                    <path d="M12 16v4"></path>
+                    <path d="M12 2v4"></path>
+                </svg>
+                SquirrelCare
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="#">Home</a>
+                <a href="#health-tools">Health Tools</a>
+                <a href="#symptoms">Symptoms</a>
+                <a href="#wellness">Wellness</a>
+                <a href="#meet-suri">About</a>
+                <button class="btn btn-primary" onclick="toggleChat()">Ask Suri</button>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="container hero">
+        <div class="hero-content">
+            <h1>Better health starts with better information.</h1>
+            <p>SquirrelCare provides approachable AI-assisted healthcare information, wellness guidance, symptom education, and useful health tools.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="toggleChat()">Ask Suri</button>
+                <a href="#health-tools" class="btn btn-outline">Explore Health Tools</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M45.7,-76.1C58.9,-69.3,69,-56.3,77.5,-42.4C86,-28.5,92.9,-14.2,93.1,0.1C93.3,14.5,86.8,29,78.2,42.5C69.6,56,58.9,68.4,45.4,76C31.9,83.6,15.9,86.4,0.4,85.7C-15.1,85.1,-30.2,81.1,-43.3,73.1C-56.4,65.1,-67.5,53.2,-75.7,39.4C-83.9,25.6,-89.2,10.1,-89.4,-5.4C-89.6,-20.9,-84.7,-36.3,-75.6,-49.2C-66.5,-62.1,-53.2,-72.5,-38.8,-78.9C-24.4,-85.3,-8.9,-87.7,6.3,-97.6C21.5,-87.5,23.3,-74.6,32.5,-82.9Z" transform="translate(100 100) scale(0.9)" />
+                <!-- Abstract leaf inner shapes -->
+                <path fill="#ffffff" opacity="0.2" d="M100,20 C140,50 140,120 100,160 C60,120 60,50 100,20 Z" />
+            </svg>
+        </div>
+    </header>
+
+    <!-- HEALTH TOOLS -->
+    <section id="health-tools" class="section" style="background: var(--surface-alt);">
+        <div class="container">
+            <div class="section-header">
+                <h2>Health Tools</h2>
+                <p>Simple calculators to help you understand your baseline metrics.</p>
+            </div>
+            
+            <div class="tools-grid">
+                <!-- BMI Calculator -->
+                <div class="tool-card">
+                    <h3>BMI Calculator</h3>
+                    <p>Estimate your Body Mass Index.</p>
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="number" id="bmi-height" placeholder="e.g. 175">
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="bmi-weight" placeholder="e.g. 70">
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%" onclick="calculateBMI()">Calculate BMI</button>
+                    <div id="bmi-result" class="tool-result"></div>
+                    <span class="tool-note">Note: BMI is a screening metric and doesn't directly measure body composition.</span>
+                </div>
+
+                <!-- Water Intake -->
+                <div class="tool-card">
+                    <h3>Hydration Estimator</h3>
+                    <p>Get a baseline daily water intake estimate.</p>
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="water-weight" placeholder="e.g. 70">
+                    </div>
+                    <div class="form-group">
+                        <label>Activity Level</label>
+                        <select id="water-activity" style="width:100%; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                            <option value="1">Light</option>
+                            <option value="1.2">Moderate</option>
+                            <option value="1.4">High</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%" onclick="calculateWater()">Estimate Intake</button>
+                    <div id="water-result" class="tool-result"></div>
+                    <span class="tool-note">Note: This is an approximation. Needs vary based on climate and health status.</span>
+                </div>
+
+                <!-- Sleep Calculator -->
+                <div class="tool-card">
+                    <h3>Sleep Timing</h3>
+                    <p>Find out when to sleep based on wake time.</p>
+                    <div class="form-group">
+                        <label>Desired Wake-Up Time</label>
+                        <input type="time" id="sleep-wake" value="07:00">
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%; margin-top: auto;" onclick="calculateSleep()">Calculate Cycles</button>
+                    <div id="sleep-result" class="tool-result"></div>
+                    <span class="tool-note">Note: Average sleep cycles are ~90 minutes. Allow 15 mins to fall asleep.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SYMPTOMS EXPLORER -->
+    <section id="symptoms" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Understand Your Symptoms</h2>
+                <p>Explore common health categories or ask Suri for general guidance.</p>
+            </div>
+            
+            <div class="symptoms-grid">
+                <div class="symptom-category" onclick="askSuriAbout('head and neck issues like headaches')">
+                    <h4>Head & Neck</h4>
+                    <ul class="symptom-list">
+                        <li>Headaches</li>
+                        <li>Neck stiffness</li>
+                        <li>Dizziness</li>
+                        <li>Sinus pressure</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+                
+                <div class="symptom-category" onclick="askSuriAbout('chest and breathing issues')">
+                    <h4>Chest & Breathing</h4>
+                    <ul class="symptom-list">
+                        <li>Coughing</li>
+                        <li>Shortness of breath</li>
+                        <li>Congestion</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+
+                <div class="symptom-category" onclick="askSuriAbout('stomach and digestion issues')">
+                    <h4>Stomach & Digestion</h4>
+                    <ul class="symptom-list">
+                        <li>Nausea</li>
+                        <li>Heartburn</li>
+                        <li>Bloating</li>
+                        <li>Stomach pain</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+
+                <div class="symptom-category" onclick="askSuriAbout('muscle and joint pain')">
+                    <h4>Muscles & Joints</h4>
+                    <ul class="symptom-list">
+                        <li>Muscle soreness</li>
+                        <li>Joint stiffness</li>
+                        <li>Back pain</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+                
+                <div class="symptom-category" onclick="askSuriAbout('skin conditions')">
+                    <h4>Skin</h4>
+                    <ul class="symptom-list">
+                        <li>Rashes</li>
+                        <li>Dry skin</li>
+                        <li>Itching</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+                
+                <div class="symptom-category" onclick="askSuriAbout('cold and flu symptoms')">
+                    <h4>Cold & Flu</h4>
+                    <ul class="symptom-list">
+                        <li>Fever</li>
+                        <li>Sore throat</li>
+                        <li>Chills</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+                
+                <div class="symptom-category" onclick="askSuriAbout('sleep and fatigue issues')">
+                    <h4>Sleep & Fatigue</h4>
+                    <ul class="symptom-list">
+                        <li>Insomnia</li>
+                        <li>Constant tiredness</li>
+                        <li>Low energy</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+                
+                <div class="symptom-category" onclick="askSuriAbout('general wellness and preventative care')">
+                    <h4>General Wellness</h4>
+                    <ul class="symptom-list">
+                        <li>Vitamins & minerals</li>
+                        <li>Immune support</li>
+                        <li>Stress management</li>
+                    </ul>
+                    <span class="ask-suri-link">Ask Suri about this →</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" style="background: var(--surface-alt);">
+        <div class="container">
+            <div class="section-header">
+                <h2>How SquirrelCare Works</h2>
+                <p>A simple three-step process for clearer health information.</p>
+            </div>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4>Tell Suri what's bothering you</h4>
+                    <p>Open the chat and describe your symptom or ask your health question naturally.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4>Understand what's happening</h4>
+                    <p>Suri explains relevant general health information in easy-to-understand language.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4>Understand your next step</h4>
+                    <p>Learn whether basic self-care, monitoring, or professional medical attention may be appropriate.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WELLNESS -->
+
+    <section id="wellness" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everyday Wellness</h2>
+                <p>Foundations for maintaining a healthy lifestyle.</p>
+            </div>
+            
+            <div class="wellness-grid">
+                <div class="wellness-card">
+                    <h4>Nutrition</h4>
+                    <p>Focusing on whole foods, balanced macronutrients, and sufficient vitamin intake to support daily metabolic function and long-term health.</p>
+                </div>
+                <div class="wellness-card">
+                    <h4>Sleep</h4>
+                    <p>Prioritizing 7-9 hours of quality sleep to facilitate cognitive recovery, hormone regulation, and immune system strengthening.</p>
+                </div>
+                <div class="wellness-card">
+                    <h4>Movement</h4>
+                    <p>Incorporating both cardiovascular exercise and strength training to maintain joint health, bone density, and heart function.</p>
+                </div>
+                <div class="wellness-card">
+                    <h4>Mental Wellbeing</h4>
+                    <p>Managing stress through mindfulness, healthy boundaries, and social connection to reduce cortisol levels and prevent burnout.</p>
+                </div>
+                <div class="wellness-card">
+                    <h4>Hydration</h4>
+                    <p>Maintaining adequate fluid intake to support cellular function, digestion, and temperature regulation throughout the day.</p>
+                </div>
+                <div class="wellness-card">
+                    <h4>Preventive Care</h4>
+                    <p>Staying proactive with regular check-ups, screenings, and hygiene practices to catch potential health issues early.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MEET SURI & TRUST -->
+    <section id="meet-suri" class="section">
+        <div class="container">
+            <div class="meet-suri">
+                <div class="suri-avatar-large">
+                    <!-- Simple Minimalist Squirrel/Girl Motif -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a5 5 0 0 0-5 5v2a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"></path>
+                        <path d="M19 14c1.49 0 2.89.5 4 1.5-2.5 4.5-7 5.5-11 5.5S3.5 20 1 15.5C2.11 14.5 3.51 14 5 14"></path>
+                        <path d="M9 10h.01"></path>
+                        <path d="M15 10h.01"></path>
+                        <path d="M12 14c-1.5 0-2 1-2 1"></path>
+                    </svg>
+                </div>
+                <div class="meet-suri-content">
+                    <h3>Meet Suri</h3>
+                    <p>Suri is SquirrelCare's friendly AI health guide. She's endlessly curious, unusually knowledgeable, and loves turning complicated health information into explanations that are easier to understand.</p>
+                    <p>Whether you're wondering about a sudden headache, or just want to know how Vitamin D works, Suri is here to help.</p>
+                    <div class="suri-disclaimer">
+                        Suri is an AI character, not a human doctor.
+                    </div>
+                </div>
+            </div>
+
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <h5>Easy to understand</h5>
+                    <p>Complex medical terminology explained clearly and simply.</p>
+                </div>
+                <div class="trust-item">
+                    <h5>Responsible AI</h5>
+                    <p>Designed to recognize when professional emergency medical attention may be important.</p>
+                </div>
+                <div class="trust-item">
+                    <h5>Privacy-conscious</h5>
+                    <p>Conversations are cleared when closed and not unnecessarily retained on the frontend.</p>
+                </div>
+                <div class="trust-item">
+                    <h5>Health-focused</h5>
+                    <p>The assistant is specifically instructed to prioritize accurate healthcare information.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
+                        </svg>
+                        SquirrelCare
+                    </div>
+                    <p class="footer-desc">Healthcare guidance, made a little simpler. Exploring symptoms and wellness with the help of friendly AI technology.</p>
+                </div>
+                <div class="footer-links">
+                    <h5>Navigation</h5>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#health-tools">Health Tools</a></li>
+                        <li><a href="#symptoms">Symptoms</a></li>
+                        <li><a href="#wellness">Wellness</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h5>Features</h5>
+                    <ul>
+                        <li><a href="#" onclick="toggleChat(); return false;">AI Assistant (Suri)</a></li>
+                        <li><a href="#health-tools">BMI Calculator</a></li>
+                        <li><a href="#health-tools">Hydration Estimator</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a href="#">Privacy Policy (Placeholder)</a></li>
+                        <li><a href="#">Terms of Service (Placeholder)</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; <span id="current-year"></span> SquirrelCare. All rights reserved.</span>
+            </div>
+            <div class="footer-disclaimer">
+                SquirrelCare provides general health information and is not a substitute for professional medical advice, diagnosis, or emergency care.
+            </div>
+        </div>
+    </footer>
+
+    <!-- CHAT INTERFACE -->
+    <div class="chat-overlay" id="chat-overlay" onclick="toggleChat()"></div>
+    <div class="chat-widget" id="chat-widget">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="suri-avatar-small">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a5 5 0 0 0-5 5v2a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"></path>
+                        <path d="M19 14c1.49 0 2.89.5 4 1.5-2.5 4.5-7 5.5-11 5.5S3.5 20 1 15.5C2.11 14.5 3.51 14 5 14"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div style="font-weight: 600;">Suri</div>
+                    <div class="suri-status">
+                        <div class="status-dot"></div> Available
+                    </div>
+                </div>
+            </div>
+            <div class="chat-actions">
+                <button onclick="clearChat()" title="New Conversation">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
+                </button>
+                <button onclick="toggleChat()" title="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="chat-disclaimer">
+            SquirrelCare provides general health information and is not a substitute for professional diagnosis or emergency medical care.
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message message-suri">
+                <p>Hi there! I'm Suri. How are you feeling today, or what would you like to learn about?</p>
+            </div>
+        </div>
+        
+        <div class="typing-indicator" id="typing-indicator">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+
+        <div class="chat-suggestions">
+            <div class="suggestion-chip" onclick="sendSuggested('Why does my head hurt?')">Why does my head hurt?</div>
+            <div class="suggestion-chip" onclick="sendSuggested('How much water should I drink?')">Water intake</div>
+            <div class="suggestion-chip" onclick="sendSuggested('Why am I always tired?')">Always tired</div>
+            <div class="suggestion-chip" onclick="sendSuggested('Explain vitamin D deficiency.')">Vitamin D</div>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea id="chat-input" placeholder="Ask Suri a health question..." rows="1"></textarea>
+            <button class="btn-send" id="send-btn" onclick="sendMessage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+<script>
+        // Set dynamic year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('nav-links').classList.toggle('active');
+        }
+
+        // ==========================================
+        // HEALTH TOOLS LOGIC
+        // ==========================================
+        function calculateBMI() {
+            const h = parseFloat(document.getElementById('bmi-height').value) / 100;
+            const w = parseFloat(document.getElementById('bmi-weight').value);
+            const resDiv = document.getElementById('bmi-result');
+            
+            if(!h || !w || h <= 0 || w <= 0) {
+                resDiv.style.display = 'block';
+                resDiv.style.color = 'var(--error)';
+                resDiv.innerHTML = 'Please enter valid numbers.';
+                return;
+            }
+
+            const bmi = (w / (h * h)).toFixed(1);
+            let category = '';
+            if(bmi < 18.5) category = 'Underweight';
+            else if(bmi < 25) category = 'Normal weight';
+            else if(bmi < 30) category = 'Overweight';
+            else category = 'Obesity';
+
+            resDiv.style.display = 'block';
+            resDiv.style.color = 'var(--primary)';
+            resDiv.innerHTML = `Your BMI is <strong>${bmi}</strong> (${category})`;
+        }
+
+        function calculateWater() {
+            const w = parseFloat(document.getElementById('water-weight').value);
+            const a = parseFloat(document.getElementById('water-activity').value);
+            const resDiv = document.getElementById('water-result');
+
+            if(!w || w <= 0) {
+                resDiv.style.display = 'block';
+                resDiv.style.color = 'var(--error)';
+                resDiv.innerHTML = 'Please enter a valid weight.';
+                return;
+            }
+
+            // Simple estimation formula: ~33ml per kg, multiplied by activity factor
+            const ml = w * 33 * a;
+            const liters = (ml / 1000).toFixed(1);
+
+            resDiv.style.display = 'block';
+            resDiv.style.color = 'var(--primary)';
+            resDiv.innerHTML = `Estimated daily intake: <strong>~${liters} Liters</strong>`;
+        }
+
+        function calculateSleep() {
+            const timeVal = document.getElementById('sleep-wake').value;
+            const resDiv = document.getElementById('sleep-result');
+
+            if(!timeVal) {
+                resDiv.style.display = 'block';
+                resDiv.style.color = 'var(--error)';
+                resDiv.innerHTML = 'Please select a time.';
+                return;
+            }
+
+            const [hours, minutes] = timeVal.split(':');
+            let wakeDate = new Date();
+            wakeDate.setHours(hours, minutes, 0);
+
+            // Subtract 7.5 hours (5 cycles) and 9 hours (6 cycles)
+            let sleep5 = new Date(wakeDate.getTime() - (7.5 * 60 * 60 * 1000));
+            let sleep6 = new Date(wakeDate.getTime() - (9 * 60 * 60 * 1000));
+
+            const formatTime = (d) => d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            resDiv.style.display = 'block';
+            resDiv.style.color = 'var(--primary)';
+            resDiv.innerHTML = `Suggested bedtimes (allow 15m to fall asleep): <br><strong>${formatTime(sleep6)}</strong> (9 hrs) or <strong>${formatTime(sleep5)}</strong> (7.5 hrs)`;
+        }
+
+        // ==========================================
+        // CHATBOT LOGIC
+        // ==========================================
+        let chatHistory = [];
+        const chatWidget = document.getElementById('chat-widget');
+        const chatOverlay = document.getElementById('chat-overlay');
+        const messagesContainer = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        function toggleChat() {
+            const isOpen = chatWidget.classList.contains('open');
+            if (isOpen) {
+                chatWidget.classList.remove('open');
+                chatOverlay.classList.remove('active');
+            } else {
+                chatWidget.classList.add('open');
+                chatOverlay.classList.add('active');
+                setTimeout(() => chatInput.focus(), 300);
+            }
+        }
+
+        function askSuriAbout(topic) {
+            if(!chatWidget.classList.contains('open')) {
+                toggleChat();
+            }
+            chatInput.value = `I'd like to know more about ${topic}.`;
+            // Trigger auto resize
+            chatInput.dispatchEvent(new Event('input'));
+        }
+
+        function sendSuggested(text) {
+            chatInput.value = text;
+            sendMessage();
+        }
+
+        function clearChat() {
+            chatHistory = [];
+            messagesContainer.innerHTML = `
+                <div class="message message-suri">
+                    <p>Hi there! I'm Suri. How are you feeling today, or what would you like to learn about?</p>
+                </div>
+            `;
+            chatInput.value = '';
+            chatInput.focus();
+        }
+
+        function formatMarkdown(text) {
+            // Very simple parser for Bold, Bullets, and Paragraphs to keep UI clean
+            let html = '';
+            const lines = text.split('\n');
+            let inList = false;
+
+            lines.forEach(line => {
+                // Parse bold
+                line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                if (line.trim().startsWith('* ') || line.trim().startsWith('- ')) {
+                    if (!inList) { html += '<ul>'; inList = true; }
+                    html += `<li>${line.substring(2).trim()}</li>`;
+                } else {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    if (line.trim() !== '') {
+                        html += `<p>${line.trim()}</p>`;
+                    }
+                }
+            });
+            if (inList) html += '</ul>';
+            return html;
+        }
+
+        function appendMessage(role, content) {
+            const div = document.createElement('div');
+            div.className = `message message-${role}`;
+            
+            if(role === 'suri') {
+                div.innerHTML = formatMarkdown(content);
+            } else {
+                div.textContent = content; // pure text for user to prevent injection
+            }
+            
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // 1. Validate & Disable UI
+            chatInput.value = '';
+            chatInput.style.height = '48px';
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
+
+            // 2. Render user message
+            appendMessage('user', message);
+            
+            // 3. Show typing
+            messagesContainer.appendChild(typingIndicator); // move to bottom
+            typingIndicator.classList.add('active');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                // 5. Send to Python backend
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        message: message,
+                        history: chatHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                // 9. Remove typing indicator
+                typingIndicator.classList.remove('active');
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Server error');
+                }
+
+                // 10. Display response & update history
+                appendMessage('suri', data.response);
+                
+                chatHistory.push({ role: 'user', content: message });
+                chatHistory.push({ role: 'model', content: data.response });
+
+            } catch (error) {
+                typingIndicator.classList.remove('active');
+                appendMessage('suri', error.message || "Sorry, I couldn't reach the health assistant right now. Please try again in a moment.");
+            } finally {
+                // 12. Re-enable input
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        // Handle Enter (send) and Shift+Enter (new line)
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = '48px';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+    </script>
+</body>
+</html>
+    
