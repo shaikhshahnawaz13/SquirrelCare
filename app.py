@@ -145,7 +145,7 @@ model = None
 if GEMINI_API_KEY:
     try:
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-2.5-flash",
             system_instruction=SURI_SYSTEM_INSTRUCTION
         )
 
