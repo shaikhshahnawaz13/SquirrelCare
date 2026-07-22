@@ -16,7 +16,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Gemini API Key
+# Gemini API Key Hardcoded per your request
 GEMINI_API_KEY = "AQ.Ab8RN6KU6Mhutr0si2z3lVSUE6oe-LH8tovlxowXEDb32cvQmQ"
 genai.configure(api_key=GEMINI_API_KEY)
 
@@ -36,7 +36,7 @@ CRITICAL RULES:
 5. FORMATTING: Use clean, readable formatting. Use short paragraphs. Use bullet points for lists. Bold key terms. Do not use giant walls of text.
 """
 
-# Initialize the Gemini model using current supported SDK
+# Initialize the Gemini model
 try:
     model = genai.GenerativeModel(
         model_name="gemini-1.5-flash",
@@ -51,7 +51,7 @@ except Exception as e:
 # ==========================================
 @app.route('/health', methods=['GET'])
 def health_check():
-    """Endpoint to verify the backend is running and accessible."""
+    """Endpoint to verify the backend is running."""
     return jsonify({
         "status": "online",
         "service": "SquirrelCare Backend",
@@ -60,12 +60,11 @@ def health_check():
 
 @app.route('/', methods=['GET'])
 def index():
-    """Fallback route just in case someone visits the backend URL directly."""
     return jsonify({"message": "SquirrelCare API is running. Please access the application via the frontend."})
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    """Handles chat requests, passing them to Gemini and returning the response."""
+    """Handles chat requests, passing them to Gemini."""
     if not model:
         return jsonify({"error": "The AI service is currently misconfigured on the server."}), 503
 
@@ -84,35 +83,27 @@ def chat():
 
         client_history = data.get('history', [])
         
-        # Format history for Gemini API requirements (role must be 'user' or 'model')
         formatted_history = []
-        for msg in client_history[-15:]: # Keep last 15 messages for context
+        for msg in client_history[-15:]:
             role = "user" if msg.get('role') == 'user' else "model"
             formatted_history.append({
                 "role": role,
                 "parts": [msg.get('content', '')]
             })
 
-        # Start chat session with history
         chat_session = model.start_chat(history=formatted_history)
-        
-        # Send message
         response = chat_session.send_message(user_message)
         
-        return jsonify({
-            "response": response.text
-        })
+        return jsonify({"response": response.text})
 
     except genai.types.generation_types.StopCandidateException as e:
         logger.error(f"Content Policy Violation: {str(e)}")
         return jsonify({"error": "I'm sorry, I cannot discuss that topic."}), 400
     except Exception as e:
         logger.error(f"Gemini API Error: {str(e)}")
-        # Safe frontend error message, never exposing stack traces
         return jsonify({"error": "Sorry, I couldn't reach the health network right now. Please try again in a moment."}), 500
 
 if __name__ == '__main__':
-    # Bind to 0.0.0.0 and use PORT env var for production compatibility (Render/Heroku)
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-            
+    
