@@ -65,14 +65,13 @@
             padding: 0 24px;
         }
 
-        /* Responsive Alignment Fixes */
         .section { padding: 80px 0; }
         .section-compact { padding: 60px 0; }
         
         .section-header {
             margin: 0 auto 48px;
             max-width: 600px;
-            text-align: center; /* Forced Center */
+            text-align: center;
         }
         .section-header h2 {
             font-size: 2.25rem;
@@ -329,7 +328,7 @@
             .hero-content { display: flex; flex-direction: column; align-items: center; }
             .hero-content h1, .hero-content p { text-align: center; margin-left: auto; margin-right: auto; }
             .hero-actions { justify-content: center; }
-            .hero-svg-main { max-width: 80%; } /* Constrain SVG size on tablets */
+            .hero-svg-main { max-width: 80%; } 
             .tools-wrapper { grid-template-columns: 1fr 1fr; }
             .wellness-grid { grid-template-columns: 1fr 1fr; }
         }
@@ -343,7 +342,7 @@
             .mobile-menu-btn { display: block; }
             
             .hero-content h1 { font-size: 2.5rem; }
-            .hero-svg-main { max-width: 90%; } /* Constrain SVG size on phones */
+            .hero-svg-main { max-width: 90%; } 
             
             .tools-wrapper { grid-template-columns: 1fr; }
             .symptoms-container { grid-template-columns: 1fr; }
@@ -361,8 +360,7 @@
         }
     </style>
 </head>
-
-    <body>
+<body>
 
     <!-- PRELOADER -->
     <div id="preloader" class="preloader">
@@ -378,6 +376,7 @@
     </div>
 
     <!-- NAVIGATION -->
+
     <nav id="navbar">
         <div class="container nav-container">
             <a href="#" class="logo">
@@ -610,13 +609,11 @@
 
     <!-- JAVASCRIPT -->
 
-        <script>
+    <script>
         // ==========================================
         // CONFIGURATION 
         // ==========================================
-        // TO FIX THE GITHUB PAGES ERROR: You must deploy app.py to a host (like Render)
-        // and replace the URL below with your live "https://" URL. 
-        const BACKEND_URL = 'http://127.0.0.1:5000'; 
+        const BACKEND_URL = 'https://squirrelcare.onrender.com'; 
 
         // ==========================================
         // UI, ANIMATIONS, & PRELOADER
@@ -820,7 +817,7 @@
                 thinkingStatus.style.display = 'none';
                 
                 // Explanatory fallback if they test GitHub Pages locally
-                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.message.includes('HTML Returned')) {
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.message.includes('HTML Returned') || error.message.includes('Unexpected token')) {
                     appendMessage('suri', "Error: I cannot connect to the server right now. If you are hosting this on GitHub Pages, make sure you have deployed app.py to a web server (like Render.com) and updated the BACKEND_URL in the HTML to point to your live site, rather than localhost.", true);
                 } else {
                     appendMessage('suri', error.message || "Sorry, I couldn't reach my medical network. Please try again later.", true);
